@@ -1,0 +1,16 @@
+# Loads default set of integrations. Do not remove.
+default_config:
+zeroconf:
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+logger:
+  default: warning
+  logs:
+    #custom_components.solaredge_modbus: notset

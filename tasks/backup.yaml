@@ -1,0 +1,16 @@
+---
+- name: Ensure backup location
+  ansible.builtin.file:
+    path: "{{backup_dir}}"
+    state: directory
+    mode: 660
+- name: Export podman volumes
+  ansible.builtin.command: podman volume export homeassistant --output "{{backup_dir}}/{{item}}{{ansible_facts.ansible_date_time.iso8601}}.tar"
+  with_items:
+    - homeassistant
+- name: Create archive
+  community.general.archive:
+    dest: "{{home_dir}}/homeassistant-backup-{{ansible_facts.ansible_date_time.iso8601}}.tgz"
+    mode: 660
+    path: "{{backup_dir}}"
+- name: Upload archive to remote

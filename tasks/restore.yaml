@@ -1,0 +1,22 @@
+---
+- name: Extract archive
+  ansible.builtin.unarchive:
+    src: "{{archive_url}}"
+    dest: "{{backup_dir}}"
+    remote_src: yes
+  register: backup_archive
+- name: Check if volume exists
+  ansible.builtin.command: podman volume list
+  register: volume_exists
+- name: Backup and delete volume
+  block:
+    - name: Backup volume
+      ansible.builtin.command: podman volume export homeassistant --output "{{backup_dir}}/{{item}}{{ansible_facts.ansible_date_time.iso8601}}.tar"
+    - name: Delete and recreate volume
+      containers.podman.podman_volume:
+        name: homeassistant
+        recreate: true
+        state: present
+  when: volume_exists
+- name: Restore volume
+  ansible.builtin.command: podman volume import {{backup_archive.dest}}/{{backup_archive.files|select('search', '^homeassistant.*\.tar$')}}

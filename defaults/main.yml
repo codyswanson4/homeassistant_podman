@@ -1,0 +1,6 @@
+home_dir: "/opt/homeassistant"
+config_dir: "/etc/homeassistant"
+backup_dir: "/tmp/homeassistant"
+archive_url: ""
+
+homeassistant_image_label: "stable"

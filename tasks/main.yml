@@ -1,0 +1,3 @@
+---
+- name: Include setup task
+  include_tasks: tasks/setup.yaml

@@ -1,0 +1,11 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+  - name: Test homeassistant is listening
+    block:
+      ansible.builtin.uri:
+        url: http://127.0.0.1:8123/
