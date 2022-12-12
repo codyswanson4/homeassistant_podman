@@ -1,0 +1,1 @@
+{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"/home/cswanson/Repos/homeassistant_podman","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}

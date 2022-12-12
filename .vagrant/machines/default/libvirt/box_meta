@@ -1,1 +1,1 @@
-{"name":"generic/fedora37","version":"4.2.6","provider":"libvirt","directory":"boxes/generic-VAGRANTSLASH-fedora37/4.2.6/libvirt"}
+{"name":"fedora/37-cloud-base","version":"37.20221105.0","provider":"libvirt","directory":"boxes/fedora-VAGRANTSLASH-37-cloud-base/37.20221105.0/libvirt"}

@@ -1,6 +1,6 @@
 ---
 - name: Ensure Required Software
-  ansible.builtin.package:
+  ansible.builtin.dnf:
     name:
       - podman
     state: latest
