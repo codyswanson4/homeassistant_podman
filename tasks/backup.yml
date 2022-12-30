@@ -1,0 +1,22 @@
+---
+- name: Ensure backup location
+  ansible.builtin.file:
+    path: "{{backup_dir}}"
+    state: directory
+    mode: 660
+- name: Export podman volumes
+  ansible.builtin.command: podman volume export homeassistant --output "{{backup_dir}}/homeassistant-backup-{{ansible_facts.ansible_date_time.iso8601}}.tar"
+  with_items:
+    - homeassistant
+- name: Create archive
+  community.general.archive:
+    dest: "{{backup_dir}}/homeassistant-backup-{{ansible_facts.ansible_date_time.iso8601}}.tgz"
+    mode: 660
+    path: "{{backup_dir}}/homeassistant-{{ansible_facts.ansible_date_time.iso8601.tar"
+- name: Upload archive to remote
+  amazon.aws.s3_object:
+    bucket: "{{backup_bucket}}"
+    object: "{{backup_prefix}}/homeassistant-backup-{{ansible_facts.ansible_date_time.iso8601}}"
+    mode: put
+    src: "{{backup_dir}}/homeassistant-backup-{{ansible_facts.ansible_date_time.iso8601}}"
+  when: backup_bucket is defined

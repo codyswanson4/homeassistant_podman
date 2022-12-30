@@ -5,6 +5,7 @@ driver:
   name: vagrant
 platforms:
   - name: instance
+    box: fedora/37-cloud-base
 provisioner:
   name: ansible
 verifier:

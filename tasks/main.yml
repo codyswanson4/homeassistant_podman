@@ -1,3 +1,30 @@
 ---
-- name: Include setup task
-  include_tasks: tasks/setup.yaml
+- name: Check if HA is installed
+  ansible.builtin.stat:
+    path: "{{home_dir}}/.config/systemd/user/homeassistant.service"
+  register: ha_installed
+
+- block:
+  - name: Include backup task
+    include_tasks: tasks/backup.yml
+  become: true
+  become_user: "homeassistant"
+  when: ha_installed.stat.exists
+
+- block:
+  - name: Include setup task
+    include_tasks: tasks/setup.yml
+  become: true
+  become_user: "root"
+  when: not ha_installed.stat.exists
+
+- name: Check if backup archive exists
+  ansible.builtin.stat:
+    path: "{{backup_dir}}/{{backup_file}}"
+  register: backup_file
+- block:
+  - name: Include Restore task if backup archive exists
+    include_tasks: tasks/restore.yml
+  become: true
+  become_user: "homeassistant"
+  when: backup_file.stat.exists

@@ -1,6 +1,6 @@
 ---
 - name: Ensure Required Software
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name:
       - podman
     state: latest
@@ -37,6 +37,7 @@
     group: containers
     mode: 0640
   with_fileglob: "templates/*.service.j2"
+  register: unit_install
 - name: Ensure config file location
   ansible.builtin.file:
     group: containers
@@ -55,11 +56,15 @@
     timeout: 5
 - name: Reload Systemd Daemon
   ansible.builtin.command: systemctl --user -M homeassistant@ daemon-reload
+  when: unit_install is changed
 - name: Enable Home Assistant services
   ansible.builtin.command: systemctl --user -M homeassistant@ enable {{item}}
   with_items:
     - homeassistant
-- name: Start Home Assistant services
-  ansible.builtin.command: systemctl --user -M homeassistant@ start {{item}}
+- name: Restart Home Assistant services
+  ansible.builtin.command: systemctl --user -M homeassistant@ restart {{item}}
   with_items:
     - homeassistant
+  when:
+    - unit_install is changed
+    - not user_lingering.stat.exists
